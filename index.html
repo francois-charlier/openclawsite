@@ -193,6 +193,36 @@
             background: var(--bg);
             border-top: 1px solid rgba(128,128,128,0.15);
         }
+
+        /* Back to top button */
+        #backToTop {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        #backToTop.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        #backToTop:hover { opacity: 0.85; transform: scale(1.08); }
     </style>
 </head>
 <body>
@@ -242,6 +272,14 @@
             html.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
         });
+        const btt = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            btt.classList.toggle('visible', window.scrollY > 300);
+        });
+        btt.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
+    <button id="backToTop" title="Retour en haut">↑</button>
 </body>
 </html>
