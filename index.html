@@ -1,31 +1,247 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Example</title>
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: Arial, sans-serif; }
-            nav { position: fixed; top: 0; width: 100%; background: #222; padding: 14px 30px; display: flex; gap: 30px; z-index: 1000; }
-            nav a { color: #fff; text-decoration: none; font-size: 16px; font-weight: bold; transition: color 0.2s; }
-            nav a:hover { color: #f0c040; }
-            section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px 40px; }
-            #accueil { background: #f9f9f9; }
-            #galerie { background: #eef4ff; }
-            html { scroll-behavior: smooth; }
-        </style>
-    </head>
-    <body>
-        <nav>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example</title>
+    <style>
+        :root[data-theme="light"] {
+            --bg: #f5f5f7;
+            --bg2: #ffffff;
+            --nav-bg: rgba(245,245,247,0.85);
+            --text: #1d1d1f;
+            --text2: #6e6e73;
+            --accent: #0071e3;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+            --toggle-bg: #e0e0e5;
+            --toggle-knob: #ffffff;
+        }
+        :root[data-theme="dark"] {
+            --bg: #000000;
+            --bg2: #1c1c1e;
+            --nav-bg: rgba(0,0,0,0.85);
+            --text: #f5f5f7;
+            --text2: #a1a1a6;
+            --accent: #2997ff;
+            --card-bg: #1c1c1e;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --toggle-bg: #3a3a3c;
+            --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(128,128,128,0.15);
+            padding: 0 30px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        .nav-links { display: flex; gap: 32px; }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            transition: color 0.2s;
+            opacity: 0.85;
+        }
+        nav a:hover { color: var(--accent); opacity: 1; }
+
+        /* Dark mode toggle */
+        .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+        .toggle-label { font-size: 13px; color: var(--text2); }
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 26px;
+            cursor: pointer;
+        }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: var(--toggle-bg);
+            border-radius: 999px;
+            transition: background 0.3s;
+        }
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 20px; height: 20px;
+            left: 3px; top: 3px;
+            background: var(--toggle-knob);
+            border-radius: 50%;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { background: var(--accent); }
+        input:checked + .slider:before { transform: translateX(18px); }
+        .toggle-icon { font-size: 15px; }
+
+        /* Hero section */
+        section { padding-top: 52px; }
+        #accueil {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--bg);
+        }
+        .hero-eyebrow {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        #accueil h1 {
+            font-size: clamp(40px, 7vw, 80px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        #accueil p {
+            font-size: 19px;
+            color: var(--text2);
+            max-width: 520px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 14px 30px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .btn:hover { opacity: 0.85; transform: scale(1.02); }
+
+        /* Galerie section */
+        #galerie {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            background: var(--bg2);
+        }
+        #galerie h2 {
+            font-size: clamp(28px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        #galerie .subtitle {
+            font-size: 17px;
+            color: var(--text2);
+            margin-bottom: 48px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            max-width: 480px;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+        .card img { width: 100%; display: block; }
+        .card-caption {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: var(--text2);
+            text-align: left;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            color: var(--text2);
+            background: var(--bg);
+            border-top: 1px solid rgba(128,128,128,0.15);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
             <a href="#accueil">Accueil</a>
             <a href="#galerie">Galerie</a>
-        </nav>
-        <section id="accueil">
-            <h1 style="color: yellow;">Hello World</h1>
-            <p>This is an example of a simple HTML page with one paragraph.</p>
-        </section>
-        <section id="galerie">
-            <h2>Galerie</h2>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/StarWarsLogo.jpeg" alt="image" style="max-width:400px; margin-top:20px;">
-        </section>
-    </body>
+        </div>
+        <div class="toggle-wrap">
+            <span class="toggle-icon">☀️</span>
+            <label class="toggle">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-icon">🌙</span>
+        </div>
+    </nav>
+
+    <section id="accueil">
+        <p class="hero-eyebrow">Bienvenue</p>
+        <h1>Hello World</h1>
+        <p>This is an example of a simple HTML page with one paragraph.</p>
+        <a href="#galerie" class="btn">Voir la galerie →</a>
+    </section>
+
+    <section id="galerie">
+        <h2>Galerie</h2>
+        <p class="subtitle">Une collection soigneusement sélectionnée.</p>
+        <div class="card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/StarWarsLogo.jpeg" alt="Star Wars Logo">
+            <div class="card-caption">Star Wars — Une saga légendaire.</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Example. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const saved = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', saved);
+        toggle.checked = saved === 'dark';
+        toggle.addEventListener('change', () => {
+            const theme = toggle.checked ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        });
+    </script>
+</body>
 </html>
