@@ -261,25 +261,28 @@
         <p>© 2025 Example. Tous droits réservés.</p>
     </footer>
 
+    <button id="backToTop" title="Retour en haut">↑</button>
     <script>
-        const toggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const saved = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', saved);
-        toggle.checked = saved === 'dark';
-        toggle.addEventListener('change', () => {
-            const theme = toggle.checked ? 'dark' : 'light';
-            html.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        });
-        const btt = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            btt.classList.toggle('visible', window.scrollY > 300);
-        });
-        btt.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const saved = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', saved);
+            toggle.checked = saved === 'dark';
+            toggle.addEventListener('change', () => {
+                const theme = toggle.checked ? 'dark' : 'light';
+                html.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            });
+
+            const btt = document.getElementById('backToTop');
+            window.addEventListener('scroll', () => {
+                btt.classList.toggle('visible', window.scrollY > 300);
+            });
+            btt.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         });
     </script>
-    <button id="backToTop" title="Retour en haut">↑</button>
 </body>
 </html>
