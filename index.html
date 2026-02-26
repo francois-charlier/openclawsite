@@ -2,10 +2,30 @@
 <html>
     <head>
         <title>Example</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: Arial, sans-serif; }
+            nav { position: fixed; top: 0; width: 100%; background: #222; padding: 14px 30px; display: flex; gap: 30px; z-index: 1000; }
+            nav a { color: #fff; text-decoration: none; font-size: 16px; font-weight: bold; transition: color 0.2s; }
+            nav a:hover { color: #f0c040; }
+            section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px 40px; }
+            #accueil { background: #f9f9f9; }
+            #galerie { background: #eef4ff; }
+            html { scroll-behavior: smooth; }
+        </style>
     </head>
     <body>
-        <h1 style="color: yellow;">Hello World</h1>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/StarWarsLogo.jpeg" alt="image">
-        <p>This is an example of a simple HTML page with one paragraph.</p>
+        <nav>
+            <a href="#accueil">Accueil</a>
+            <a href="#galerie">Galerie</a>
+        </nav>
+        <section id="accueil">
+            <h1 style="color: yellow;">Hello World</h1>
+            <p>This is an example of a simple HTML page with one paragraph.</p>
+        </section>
+        <section id="galerie">
+            <h2>Galerie</h2>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/StarWarsLogo.jpeg" alt="image" style="max-width:400px; margin-top:20px;">
+        </section>
     </body>
 </html>
