@@ -52,7 +52,7 @@
             justify-content: space-between;
             z-index: 1000;
         }
-        .nav-links { display: flex; gap: 32px; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
         nav a {
             color: var(--text);
             text-decoration: none;
@@ -63,10 +63,16 @@
             opacity: 0.85;
         }
         nav a:hover { color: var(--accent); opacity: 1; }
-
-        /* Dark mode toggle */
+        .nav-login-btn {
+            background: var(--accent);
+            color: #fff !important;
+            padding: 7px 18px;
+            border-radius: 980px;
+            opacity: 1 !important;
+            font-size: 13px !important;
+        }
+        .nav-login-btn:hover { opacity: 0.85 !important; }
         .toggle-wrap { display: flex; align-items: center; gap: 8px; }
-        .toggle-label { font-size: 13px; color: var(--text2); }
         .toggle {
             position: relative;
             width: 44px;
@@ -94,8 +100,6 @@
         input:checked + .slider { background: var(--accent); }
         input:checked + .slider:before { transform: translateX(18px); }
         .toggle-icon { font-size: 15px; }
-
-        /* Hero section */
         section { padding-top: 52px; }
         #accueil {
             min-height: 100vh;
@@ -142,8 +146,6 @@
             transition: opacity 0.2s, transform 0.2s;
         }
         .btn:hover { opacity: 0.85; transform: scale(1.02); }
-
-        /* Galerie section */
         #galerie {
             min-height: 100vh;
             display: flex;
@@ -183,8 +185,6 @@
             color: var(--text2);
             text-align: left;
         }
-
-        /* Footer */
         footer {
             text-align: center;
             padding: 24px;
@@ -193,8 +193,6 @@
             background: var(--bg);
             border-top: 1px solid rgba(128,128,128,0.15);
         }
-
-        /* Back to top button */
         #backToTop {
             position: fixed;
             bottom: 32px;
@@ -217,12 +215,97 @@
             pointer-events: none;
             z-index: 999;
         }
-        #backToTop.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        #backToTop.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
         #backToTop:hover { opacity: 0.85; transform: scale(1.08); }
+        /* Login modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            padding: 48px 40px 40px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+        .modal h2 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .modal-sub { font-size: 14px; color: var(--text2); margin-bottom: 32px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(128,128,128,0.25);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { border-color: var(--accent); }
+        .btn-login {
+            width: 100%;
+            margin-top: 8px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .btn-login:hover { opacity: 0.85; transform: scale(1.02); }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text2);
+            cursor: pointer;
+        }
+        .modal-close:hover { color: var(--text); }
+        .custom-alert {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #d4edda;
+            color: #155724;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            text-align: center;
+        }
+        [data-theme="dark"] .custom-alert { background: #1e3a2a; color: #7dcea0; }
     </style>
 </head>
 <body>
@@ -230,6 +313,7 @@
         <div class="nav-links">
             <a href="#accueil">Accueil</a>
             <a href="#galerie">Galerie</a>
+            <a href="#" id="openLogin" class="nav-login-btn">Connexion</a>
         </div>
         <div class="toggle-wrap">
             <span class="toggle-icon">☀️</span>
@@ -267,7 +351,27 @@
         <p>© 2025 Example. Tous droits réservés.</p>
     </footer>
 
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <button class="modal-close" id="closeLogin">✕</button>
+            <h2>Connexion</h2>
+            <p class="modal-sub">Accédez à votre espace personnel.</p>
+            <div class="form-group">
+                <label>Adresse e-mail</label>
+                <input type="email" id="loginEmail" placeholder="exemple@mail.com">
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+            </div>
+            <button class="btn-login" id="loginBtn">Se connecter</button>
+            <div class="custom-alert" id="loginAlert">✅ Connexion réussie ! Bienvenue.</div>
+        </div>
+    </div>
+
     <button id="backToTop" title="Retour en haut">↑</button>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.getElementById('themeToggle');
@@ -287,6 +391,30 @@
             });
             btt.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            const loginModal = document.getElementById('loginModal');
+            const openLogin = document.getElementById('openLogin');
+            const closeLogin = document.getElementById('closeLogin');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginAlert = document.getElementById('loginAlert');
+
+            openLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginModal.classList.add('open');
+            });
+            closeLogin.addEventListener('click', () => {
+                loginModal.classList.remove('open');
+                loginAlert.style.display = 'none';
+            });
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) {
+                    loginModal.classList.remove('open');
+                    loginAlert.style.display = 'none';
+                }
+            });
+            loginBtn.addEventListener('click', () => {
+                loginAlert.style.display = 'block';
             });
         });
     </script>
